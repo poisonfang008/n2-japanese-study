@@ -440,10 +440,8 @@ function initQuiz(category) {
   // 渲染分类标签
   renderCategoryTabs(category);
 
-  // 启动秒表（仅读解）
-  if (category === 'reading') {
-    startStopwatch();
-  }
+  // 启动秒表
+  startStopwatch();
 
   renderQuizQuestion();
 }
@@ -484,11 +482,10 @@ function renderQuizQuestion() {
   s.answered = false;
   s.questionStartTime = Date.now();
 
-  // 重置秒表（仅读解每道题）
-  if (s.category === 'reading') {
-    s.stopwatchSec = 0;
-    updateStopwatchDisplay();
-  }
+  // 重置秒表每道题
+  s.stopwatchSec = 0;
+  updateStopwatchDisplay();
+  startStopwatch();
 
   const labels = ['A','B','C','D'];
   const passageHtml = q.passage
@@ -513,7 +510,7 @@ function renderQuizQuestion() {
     <div id="quiz-tabs"></div>
     <div class="quiz-header">
       <span class="quiz-progress">第 ${s.currentIndex+1}/${total} 题</span>
-      ${s.category === 'reading' ? `<div class="stopwatch" id="stopwatch"><span>⏱</span><span class="sw-time" id="sw-time">00:00</span></div>` : ''}
+      <div class="stopwatch" id="stopwatch"><span>⏱</span><span class="sw-time" id="sw-time">00:00</span></div>
     </div>
     ${passageHtml}
     ${questionHtml}
@@ -550,6 +547,9 @@ function submitAnswer() {
   const q = s.questions[s.currentIndex];
   const correct = s.selectedAnswer === q.answer;
   s.answered = true;
+
+  // 停止计时
+  stopStopwatch();
 
   // 计算本题用时
   const elapsed = Math.round((Date.now() - s.questionStartTime)/1000);
@@ -621,7 +621,7 @@ function finishQuiz() {
         <span style="font-size:2rem;font-weight:700;color:${rate>=70?'var(--green)':(rate>=50?'var(--gold)':'var(--vermilion)')}">${rate}%</span>
       </div>
       <div style="color:var(--ink-light);margin-bottom:8px">${correct}/${total} 题正确</div>
-      ${s.category === 'reading' ? `<div style="color:var(--ink-light);margin-bottom:8px">总用时：${formatTime(Math.round((Date.now()-s.sessionStart)/1000))}</div>` : ''}
+      <div style="color:var(--ink-light);margin-bottom:8px">总用时：${formatTime(Math.round((Date.now()-s.sessionStart)/1000))}</div>
       <div style="color:var(--ink-light);margin-bottom:20px;font-size:0.85rem">
         错题已自动加入<a href="javascript:void(0)" onclick="Router.go('errors')" style="color:var(--indigo)">错题本</a>
       </div>
