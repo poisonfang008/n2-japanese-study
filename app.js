@@ -318,10 +318,9 @@ let flashcardState = { words:[], index:0, known:0, unknown:0 };
 
 function initFlashcards() {
   const prog = Storage.getVocabProgress();
-  // 优先显示不认识或没见过的词
+  // 只显示不认识或没见过的词，已认识的词不再出现
   const unknown = N2Vocabulary.filter(w => !prog[w.id] || !prog[w.id].known);
-  const known = N2Vocabulary.filter(w => prog[w.id] && prog[w.id].known);
-  flashcardState.words = shuffle([...unknown, ...shuffle(known)]);
+  flashcardState.words = shuffle(unknown);
   flashcardState.index = 0;
   flashcardState.known = 0;
   flashcardState.unknown = 0;
