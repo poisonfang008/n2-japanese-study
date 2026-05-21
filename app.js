@@ -468,6 +468,17 @@ function switchQuizCategory(cat) {
   initQuiz(cat);
 }
 
+// Shuffle options and track where the correct answer moves
+function shuffleQuestionOptions(q) {
+  const indices = [0, 1, 2, 3];
+  const shuffledIndices = shuffle(indices);
+  return {
+    ...q,
+    options: shuffledIndices.map(i => q.options[i]),
+    answer: shuffledIndices.indexOf(q.answer),
+  };
+}
+
 function renderQuizQuestion() {
   const s = quizState;
   if (s.currentIndex >= s.questions.length) {
@@ -475,7 +486,10 @@ function renderQuizQuestion() {
     return;
   }
 
-  const q = s.questions[s.currentIndex];
+  const rawQ = s.questions[s.currentIndex];
+  const q = shuffleQuestionOptions(rawQ);
+  // Store shuffled question back so submitAnswer uses correct answer index
+  s.questions[s.currentIndex] = q;
   const total = s.questions.length;
   s.selectedAnswer = -1;
   s.answered = false;
@@ -810,12 +824,13 @@ function toggleErrorQuestion(idx, qid) {
     return;
   }
 
+  const shuffled = shuffleQuestionOptions(q);
   const labels = ['A','B','C','D'];
   container.innerHTML = `
     <div style="border-top:1px solid var(--border);padding-top:12px">
       <div class="quiz-options">
-        ${q.options.map((opt,i) => `
-          <div class="quiz-option" onclick="redoSelectAnswer('${qid}',${i},${idx},${q.answer})" id="redo-opt-${idx}-${i}">
+        ${shuffled.options.map((opt,i) => `
+          <div class="quiz-option" onclick="redoSelectAnswer('${qid}',${i},${idx},${shuffled.answer})" id="redo-opt-${idx}-${i}">
             <span class="option-label">${labels[i]}</span>
             <span>${opt}</span>
           </div>
