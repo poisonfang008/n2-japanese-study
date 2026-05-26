@@ -801,14 +801,20 @@ function renderErrors(filter) {
           <div class="error-question">${e.question.question.replace(/\n/g,'<br>')}</div>
           <div class="error-answer">正确答案：${e.question.options[e.question.answer]}</div>
           <div style="font-size:0.8rem;color:var(--ink-light);margin-top:6px">${e.question.explanation}</div>
-          <div style="margin-top:10px">
+          <div style="margin-top:10px;display:flex;gap:8px">
             <button class="btn btn-sm btn-outline" onclick="toggleErrorQuestion(${i},'${e.qid}')">重新练习此题</button>
+            <button class="btn btn-sm btn-outline" onclick="removeErrorQuestion('${e.qid}')" style="color:var(--vermilion);border-color:var(--vermilion)">移除此题</button>
           </div>
           <div id="error-quiz-${i}" style="margin-top:12px"></div>
         </div>
       `).join('')
     }
   `;
+}
+
+function removeErrorQuestion(qid) {
+  Storage.removeError(qid);
+  renderErrors();
 }
 
 function toggleErrorQuestion(idx, qid) {

@@ -721,7 +721,7 @@ const QuizQuestions = {
       id:"g5", category:"grammar",
       question:"疲れている______、昨日は早く寝た。",
       options:["ためか","せいか","おかげか","からか"],
-      answer:0,
+      answer:1,
       explanation:"「〜せいか」表示\"可能是因为…（不好的原因）\"，带有消极语感。疲劳是不好的状态，用「せいか」最合适。「おかげか」用于好结果，「ためか」中性。"
     },
     {
